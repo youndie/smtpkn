@@ -1,21 +1,23 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("smtp.publish")
-    id("org.jetbrains.kotlin.multiplatform")
+    // The Kotlin plugin is applied HERE and not by the shared convention. `sborka.kmp` configures
+    // Kotlin and deliberately does not choose its version — so a wrapper like this one has to bring
+    // it, or there is no `kotlin { }` extension for the lines below to configure.
+    kotlin("multiplatform")
+    id("ru.workinprogress.sborka.kmp")
+    id("ru.workinprogress.sborka.lint")
 }
 
+// The multiplatform library shape of this repository: the shared mechanics come from
+// `ru.workinprogress.sborka.kmp` — explicit API, the toolchain, warnings as errors, `kotlin("test")`
+// in `commonTest`, and the jvm target compiled to `sborka.jvmFloor` — and what stays here is the
+// TARGET SET, which is a decision this repository argued out and no other repository shares.
+
 kotlin {
-    // A library: every public declaration spells out its visibility and its return type.
-    explicitApi()
-
-    jvmToolchain(21)
-
-    jvm {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
+    // The JVM. Its bytecode level is not written here any more: `sborka.kmp` compiles it to
+    // `sborka.jvmFloor`, which is also what `sborka.publish` advertises — the JDK that builds this
+    // library is not the JDK that has to run it, and now that is one number instead of two.
+    jvm()
 
     // Target platform number one; milestones are closed against it.
     linuxX64()
@@ -35,14 +37,4 @@ kotlin {
     // test tasks need an iOS SDK that is not installed here, and a test task that cannot run is
     // worse than an absent target — it looks like coverage.
     iosArm64()
-
-    compilerOptions {
-        allWarningsAsErrors.set(true)
-    }
-
-    sourceSets {
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-        }
-    }
 }

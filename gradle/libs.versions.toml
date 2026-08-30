@@ -1,4 +1,7 @@
 [versions]
+# The shared build conventions. One number for both the plugins this build applies and the artefact
+# `build-logic` compiles against.
+sborka = "0.1.0.13"
 kotlin = "2.4.10"
 kotlinxCoroutines = "1.11.0"
 ktor = "3.5.2"
@@ -10,9 +13,9 @@ kotlinxDatetime = "0.8.0"
 mavenPublish = "0.37.0"
 # Pinned on purpose: ktlint is wired in as a CLI, without a wrapper plugin.
 # See docs/research/research-architecture.md, D10.
-ktlint = "1.8.0"
 
 [libraries]
+sborka-conventions = { module = "ru.workinprogress.sborka:conventions", version.ref = "sborka" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 # Only :smtp-mime needs it, and only to write an RFC 5322 date.
@@ -34,7 +37,6 @@ kotlincrypto-hash-sha2 = { module = "org.kotlincrypto.hash:sha2", version.ref = 
 # Nonces must be unpredictable, and kotlin.random.Random is not.
 kotlincrypto-random = { module = "org.kotlincrypto.random:crypto-rand", version.ref = "kotlincryptoRandom" }
 
-ktlint-cli = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 mavenPublish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenPublish" }
