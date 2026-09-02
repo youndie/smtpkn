@@ -275,6 +275,36 @@ class SmtpAuthTest {
         }
 
     @Test
+    fun `authentication after STARTTLS needs no permission to run over cleartext`() =
+        runTest {
+            // rfc3207.txt:177: after the handshake both parties MUST decide whether to continue
+            // "based on the authentication and privacy achieved" — a session that does not record
+            // the handshake cannot make that decision, and refuses the AUTH that rfc4954.txt:326
+            // says is exactly what STARTTLS is there to allow.
+            val transport =
+                scriptedTransport {
+                    serverSays("220 smtp.example.com")
+                    clientWrites("EHLO client.example.com\r\n")
+                    serverSays("250-smtp.example.com", "250 STARTTLS")
+                    clientWrites("STARTTLS\r\n")
+                    serverSays("220 Ready to start TLS")
+                    clientWrites("EHLO client.example.com\r\n")
+                    serverSays("250-smtp.example.com", "250 AUTH PLAIN")
+                    clientWrites("AUTH FAKE aGVsbG8=\r\n")
+                    serverSays("235 Ok")
+                    reidentify()
+                }
+
+            val session = openSession(transport)
+            session.startTls { /* the caller's handshake; here there is no byte layer to swap */ }
+
+            assertTrue(session.isEncrypted, "the session knows the handshake happened")
+            session.authenticate(mechanism("hello".encodeToByteArray()))
+
+            transport.assertScriptCompleted()
+        }
+
+    @Test
     fun `what the server announced before authentication is discarded`() =
         runTest {
             // rfc4954.txt:297: on success the client MUST discard what it learned earlier — the
@@ -330,7 +360,8 @@ class SmtpAuthTest {
          * The opening every test needs.
          *
          * `allowOverPlaintext` is passed everywhere instead of pretending the scripted transport
-         * is encrypted: the one test that matters for the cleartext rule states it explicitly.
+         * is encrypted: the tests that matter for the cleartext rule say what they mean, and the
+         * one that goes through `STARTTLS` gets there by running it.
          */
         fun ScriptedTransport.Builder.encryptedGreeting() {
             serverSays("220 smtp.example.com")

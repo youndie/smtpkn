@@ -47,6 +47,11 @@ class StartTlsE2eTest {
                 // rfc3207.txt:210 in the field: the pre-handshake list is not merely outdated.
                 assertFailsWith<Throwable> { beforeHandshake.supportsStartTls }
 
+                // The scripted suite cannot say this: only a real provider over a real connection
+                // shows that what the session records matches what the socket is actually doing.
+                // AUTH reads this, and read it wrong until the flag was assigned.
+                assertTrue(session.isEncrypted, "the session records the completed handshake")
+
                 val result =
                     session.send(
                         envelope =
