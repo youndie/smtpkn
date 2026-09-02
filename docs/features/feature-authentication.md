@@ -61,6 +61,13 @@ tags: [core]
 * **Тогда:** исключение до всякой отправки; разрешается только флагом `allowOverPlaintext`.
 * **Автоматизирован:** `SmtpAuthTest.credentials are not sent over a cleartext connection`
 
+### Сценарий: вход сразу после `STARTTLS`
+* **Дано:** рукопожатие завершилось, `session.isEncrypted` — `true`.
+* **Тогда:** `authenticate` идёт без `allowOverPlaintext`: канал защищён, и библиотека это знает
+  (`docs/rfc/rfc3207.txt:177`).
+* **Автоматизирован:** `SmtpAuthTest.authentication after STARTTLS needs no permission to run over
+  cleartext`, а на настоящем провайдере — `StartTlsE2eTest.a message goes out over STARTTLS`
+
 ### Сценарий: сервер подделал подпись в SCRAM
 * **Тогда:** механизм бросает `SaslException`, сессия не считает вход состоявшимся.
 * **Автоматизирован:** `MechanismsTest.SCRAM refuses a wrong server signature`

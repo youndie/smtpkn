@@ -348,7 +348,9 @@ public class SmtpSession internal constructor(
      * `STARTTLS` — `docs/rfc/rfc3207.txt`.
      *
      * [upgrade] performs the handshake over the same connection; the session does not know how,
-     * and that is the seam the TLS module plugs into on M4.
+     * and that is the seam the TLS module plugs into on M4. Returning from it is the caller's word
+     * that the channel is protected — [isEncrypted] becomes `true`, and [authenticate] stops
+     * refusing on its own.
      *
      * Afterwards everything learned before the handshake is discarded and `EHLO` is sent again,
      * because `docs/rfc/rfc3207.txt:210` requires exactly that — a client that keeps the old
@@ -363,6 +365,11 @@ public class SmtpSession internal constructor(
         if (!reader.isIdle) {
             throw SmtpProtocolException("The server sent data before the TLS handshake was finished")
         }
+
+        // rfc3207.txt:177 asks both parties to decide whether to continue "based on the
+        // authentication and privacy achieved", and the byte layer has been swapped by now.
+        // Recording it here covers the provider overload too, which delegates to this one.
+        encrypted = true
 
         announced.markStale()
         identify()

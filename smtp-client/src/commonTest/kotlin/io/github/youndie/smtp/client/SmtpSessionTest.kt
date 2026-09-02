@@ -311,6 +311,33 @@ class SmtpSessionTest {
         }
 
     @Test
+    fun `STARTTLS records that the connection is encrypted`() =
+        runTest {
+            // rfc3207.txt:177: "After the TLS handshake has been completed, both parties MUST
+            // immediately decide whether or not to continue based on the authentication and
+            // privacy achieved." Deciding takes remembering, and everything downstream that asks
+            // whether the channel is protected — AUTH above all — reads this flag.
+            val transport =
+                scriptedTransport {
+                    serverSays("220 smtp.example.com")
+                    clientWrites("EHLO client.example.com\r\n")
+                    serverSays("250-smtp.example.com", "250 STARTTLS")
+                    clientWrites("STARTTLS\r\n")
+                    serverSays("220 Ready to start TLS")
+                    clientWrites("EHLO client.example.com\r\n")
+                    serverSays("250-smtp.example.com", "250 AUTH PLAIN")
+                }
+
+            val session = openSession(transport)
+            assertFalse(session.isEncrypted, "nothing has been negotiated yet")
+
+            session.startTls { /* the caller's handshake; here there is no byte layer to swap */ }
+
+            assertTrue(session.isEncrypted)
+            transport.assertScriptCompleted()
+        }
+
+    @Test
     fun `STARTTLS over a transport that cannot swap its byte layer is refused`() =
         runTest {
             // A scripted transport has no byte layer to replace. Failing here beats pretending the
