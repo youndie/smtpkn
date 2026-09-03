@@ -25,7 +25,7 @@ jobs:
       SMTP_E2E_API_PORT: "8025"
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: youndie/sborka/.github/actions/setup-kotlin@main
 
@@ -67,7 +67,7 @@ jobs:
     name: macosArm64
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: youndie/sborka/.github/actions/setup-kotlin@main
 
