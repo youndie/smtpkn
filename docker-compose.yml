@@ -16,7 +16,7 @@ name: kmp-smtp-client
 services:
   # Открытый канал плюс STARTTLS на том же порту — сценарий сабмишна на 587.
   mailpit:
-    image: axllent/mailpit:v1.30.7
+    image: axllent/mailpit:v1.31.0
     container_name: kmp-smtp-mailpit
     ports:
       - "1025:1025" # SMTP
@@ -68,7 +68,7 @@ services:
 
   # Implicit TLS — сценарий сабмишна на 465 (`docs/rfc/rfc8314.txt`).
   mailpit-tls:
-    image: axllent/mailpit:v1.30.7
+    image: axllent/mailpit:v1.31.0
     container_name: kmp-smtp-mailpit-tls
     ports:
       - "1465:1025"
