@@ -18,15 +18,6 @@
   // match takes effect.
   packageRules: [
     {
-      // DELIBERATELY BROADER THAN THE PRESET, which refuses `-0.6.x-compat` by name. The reason is
-      // not about one line: a `-compat` build is the new version compiled against an OLD API, it
-      // sorts as newer, and it is never an upgrade — whichever line it is published for. Dropping
-      // this in favour of the preset's narrower pattern would quietly re-open the next one.
-      description: "kotlinx-datetime publishes `-compat` builds for consumers pinned to an older line. They sort as newer and are not upgrades",
-      matchPackageNames: ["org.jetbrains.kotlinx:kotlinx-datetime"],
-      allowedVersions: "!/-compat$/",
-    },
-    {
       description: "Ktor modules share one version",
       matchPackageNames: ["/^io\\.ktor[:.]/"],
       groupName: "ktor",
