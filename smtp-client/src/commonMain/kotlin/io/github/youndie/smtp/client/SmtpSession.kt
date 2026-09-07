@@ -481,6 +481,10 @@ public class SmtpSession internal constructor(
     }
 
     /** Cancels the exchange with a single `*` — `docs/rfc/rfc4954.txt:194`. */
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "the exchange is already being abandoned; the server's reply to `*` changes nothing a caller can act on",
+    )
     private suspend fun cancel() {
         runCatching { exchangeRaw(SASL_CANCEL, "the reply to a cancelled SASL exchange") }
     }
