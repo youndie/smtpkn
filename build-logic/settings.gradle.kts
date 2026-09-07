@@ -7,10 +7,11 @@ dependencyResolutionManagement {
         maven("https://reposilite.kotlin.website/snapshots") {
             name = "wip-snapshots"
             content {
-                // Both groups on purpose. sborka is under `io.github.youndie` since the plugin ids
-                // moved; the old group is held by everything published before that move.
+                // One group, and it is the only one there can be. The portfolio's move to
+                // `io.github.youndie` is finished: nothing this build resolves is under
+                // `ru.workinprogress` any more, and a filter naming a group the server is never asked
+                // about reads as a dependency that is still there.
                 includeGroupByRegex("io\\.github\\.youndie.*")
-                includeGroupByRegex("ru\\.workinprogress.*")
             }
         }
     }
