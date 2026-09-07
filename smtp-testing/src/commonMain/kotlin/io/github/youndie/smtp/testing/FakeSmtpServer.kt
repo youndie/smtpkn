@@ -58,6 +58,10 @@ public class FakeSmtpServer(
 
         scope.launch {
             while (isActive) {
+                @Suppress(
+                    "ktlint:kapkan:swallowed-failure",
+                    "сокет закрыт при остановке сервера — выход из цикла приёма и есть ответ",
+                )
                 val accepted =
                     try {
                         bound.accept()

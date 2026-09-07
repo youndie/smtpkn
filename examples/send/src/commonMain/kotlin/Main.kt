@@ -33,6 +33,10 @@ fun main(): Unit =
         val sender = Mailbox.parse("sender@example.com")
         val recipient = Mailbox.parse("recipient@example.com")
 
+        @Suppress(
+            "ktlint:kapkan:wall-clock",
+            "`sentAt` — заголовок Date письма: по RFC 5322 это часы отправителя и есть",
+        )
         val message =
             MessageBuilder(from = sender, to = listOf(recipient))
                 .apply {

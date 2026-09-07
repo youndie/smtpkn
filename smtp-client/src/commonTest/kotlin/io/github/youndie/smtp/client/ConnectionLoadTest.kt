@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.time.Clock
+import kotlin.time.TimeSource
 
 /**
  * How much one connection carries, and whether it survives it.
@@ -39,9 +39,9 @@ class ConnectionLoadTest {
                             config = SmtpClientConfig(clientIdentity = "load.test"),
                         )
 
-                    val started = Clock.System.now()
+                    val started = TimeSource.Monotonic.markNow()
                     repeat(MESSAGES) { index -> send(session, index) }
-                    val elapsed = Clock.System.now() - started
+                    val elapsed = started.elapsedNow()
 
                     assertEquals(MESSAGES, server.received.size)
 
