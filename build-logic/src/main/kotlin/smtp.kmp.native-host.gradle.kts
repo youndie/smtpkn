@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.konan.target.HostManager
 plugins {
     id("smtp.publish")
     kotlin("multiplatform")
-    id("ru.workinprogress.sborka.kmp")
-    id("ru.workinprogress.sborka.lint")
+    id("io.github.youndie.sborka.kmp")
+    id("io.github.youndie.sborka.lint")
 }
 
 // A module that binds to a C library through cinterop.
