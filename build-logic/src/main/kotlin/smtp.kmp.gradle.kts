@@ -4,12 +4,12 @@ plugins {
     // Kotlin and deliberately does not choose its version — so a wrapper like this one has to bring
     // it, or there is no `kotlin { }` extension for the lines below to configure.
     kotlin("multiplatform")
-    id("ru.workinprogress.sborka.kmp")
-    id("ru.workinprogress.sborka.lint")
+    id("io.github.youndie.sborka.kmp")
+    id("io.github.youndie.sborka.lint")
 }
 
 // The multiplatform library shape of this repository: the shared mechanics come from
-// `ru.workinprogress.sborka.kmp` — explicit API, the toolchain, warnings as errors, `kotlin("test")`
+// `io.github.youndie.sborka.kmp` — explicit API, the toolchain, warnings as errors, `kotlin("test")`
 // in `commonTest`, and the jvm target compiled to `sborka.jvmFloor` — and what stays here is the
 // TARGET SET, which is a decision this repository argued out and no other repository shares.
 

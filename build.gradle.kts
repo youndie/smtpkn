@@ -3,7 +3,7 @@ plugins {
 }
 
 // The coordinates and the version used to be set here and copied down to every subproject. They are
-// now `sborka.group` and `version` in `gradle.properties`, applied by `ru.workinprogress.sborka.base`
+// now `sborka.group` and `version` in `gradle.properties`, applied by `io.github.youndie.sborka.base`
 // — which every module reaches through the conventions in `build-logic`.
 //
 // The ktlint CLI that used to live here is gone too. It was wired in by hand because this project
