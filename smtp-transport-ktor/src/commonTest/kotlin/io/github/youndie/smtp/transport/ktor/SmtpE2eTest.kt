@@ -168,6 +168,10 @@ class SmtpE2eTest {
          * The clock is enough: the servers keep what earlier runs sent, and two runs in the same
          * millisecond would need the test to be started twice by the same command.
          */
+        @Suppress(
+            "ktlint:kapkan:wall-clock",
+            "фикстура теста строит момент относительно сейчас",
+        )
         fun nextRunId(): String =
             kotlin.time.Clock.System
                 .now()

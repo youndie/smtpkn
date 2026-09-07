@@ -167,6 +167,10 @@ internal class SslEngineConnection(
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "закрытие TLS по возможности: отказ здесь не должен вытеснить причину, по которой закрываемся",
+    )
     override suspend fun close() {
         runCatching {
             engine.closeOutbound()
