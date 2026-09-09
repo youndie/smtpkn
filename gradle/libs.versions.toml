@@ -1,7 +1,7 @@
 [versions]
 # The shared build conventions. One number for both the plugins this build applies and the artefact
 # `build-logic` compiles against.
-sborka = "0.3.0.41"
+sborka = "0.4.0.43"
 kotlin = "2.4.10"
 kotlinxCoroutines = "1.11.0"
 ktor = "3.5.2"

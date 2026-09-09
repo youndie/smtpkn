@@ -61,6 +61,8 @@ public class FakeSmtpServer(
                 @Suppress(
                     "ktlint:kapkan:swallowed-failure",
                     "сокет закрыт при остановке сервера — выход из цикла приёма и есть ответ",
+                    "ktlint:kapkan:cancellation-swallowed",
+                    "остановка и есть то, ради чего этот цикл выходит: отмена ведёт туда же",
                 )
                 val accepted =
                     try {

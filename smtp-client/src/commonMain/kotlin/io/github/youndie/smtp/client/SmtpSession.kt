@@ -484,6 +484,8 @@ public class SmtpSession internal constructor(
     @Suppress(
         "ktlint:kapkan:swallowed-failure",
         "the exchange is already being abandoned; the server's reply to `*` changes nothing a caller can act on",
+        "ktlint:kapkan:cancellation-swallowed",
+        "the exchange is being abandoned either way, so a cancellation changes nothing about it",
     )
     private suspend fun cancel() {
         runCatching { exchangeRaw(SASL_CANCEL, "the reply to a cancelled SASL exchange") }
