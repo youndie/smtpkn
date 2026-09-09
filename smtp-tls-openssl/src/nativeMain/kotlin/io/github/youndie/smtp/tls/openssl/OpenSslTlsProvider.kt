@@ -312,6 +312,8 @@ internal class OpenSslConnection(
     @Suppress(
         "ktlint:kapkan:swallowed-failure",
         "закрытие TLS по возможности: отказ здесь не должен вытеснить причину, по которой закрываемся",
+        "ktlint:kapkan:cancellation-swallowed",
+        "переброс отмены отсюда пропустил бы underlying.close() и оставил сокет незакрытым",
     )
     override suspend fun close() {
         if (closed) return
