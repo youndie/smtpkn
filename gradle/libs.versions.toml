@@ -1,8 +1,10 @@
 [versions]
 # The shared build conventions. One number for both the plugins this build applies and the artefact
 # `build-logic` compiles against.
-sborka = "0.4.0.43"
-kotlin = "2.4.10"
+sborka = "0.4.0.89"
+# The compiler comes with them: `wip`, the catalog a sborka release publishes, carries `kotlin`
+# and the Kotlin Gradle plugin `build-logic` compiles against. There is no Kotlin version in this
+# file to drift from the rest of the portfolio.
 kotlinxCoroutines = "1.11.0"
 ktor = "3.5.2"
 kotlincrypto = "0.8.0"
@@ -38,8 +40,6 @@ kotlincrypto-hash-sha2 = { module = "org.kotlincrypto.hash:sha2", version.ref = 
 kotlincrypto-random = { module = "org.kotlincrypto.random:crypto-rand", version.ref = "kotlincryptoRandom" }
 
 
-kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 mavenPublish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenPublish" }
 
 [plugins]
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
