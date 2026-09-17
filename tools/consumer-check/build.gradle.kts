@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
+    alias(wip.plugins.kotlinMultiplatform)
 }
 
 // The version under test. A timestamped snapshot works as well (`0.1.0-20260902.063559-4`), which

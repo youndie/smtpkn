@@ -21,11 +21,30 @@ dependencyResolutionManagement {
             name = "smtpkn"
             content { includeGroup("io.github.youndie") }
         }
+        // Where the shared catalog comes from. Separate from the repository above, because that one
+        // points at wherever the artefact under test lives — a CI file repository, usually — and the
+        // catalog is not published there.
+        maven("https://reposilite.kotlin.website/snapshots") {
+            name = "wip-snapshots"
+            content { includeGroupByRegex("io\\.github\\.youndie\\.sborka.*") }
+        }
     }
     versionCatalogs {
         // Only for the Kotlin version: the consumer must compile with the compiler that produced the
         // klib, and that number is not going to be copied here to drift.
+        //
+        // It lives in `wip` now — the catalog a sborka release publishes — so the reason points
+        // there. This build is deliberately outside the root settings and applies no sborka plugin,
+        // so it takes the catalog as what it is, published, with the release READ out of the main
+        // catalog rather than written here. Copying the number is exactly what the sentence above
+        // refuses, and it is the form of drift that still builds.
         create("libs") { from(files("../../gradle/libs.versions.toml")) }
+        create("wip") {
+            val pin = file("../../gradle/libs.versions.toml").readLines()
+                .first { it.trimStart().startsWith("sborka = ") }
+                .substringAfter('"').substringBefore('"')
+            from("io.github.youndie.sborka:catalog:$pin")
+        }
     }
 }
 
