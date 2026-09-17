@@ -4,7 +4,9 @@ package = openssl
 
 # Include and library paths are not written here on purpose: Homebrew keeps headers under a
 # versioned prefix and Debian keeps the libraries in a multiarch directory, so both are discovered
-# in build.gradle.kts instead of being frozen into this file.
+# in build.gradle.kts. This file is not what cinterop reads: the build appends the resolved
+# `linkerOpts` and `libraryPaths` to a copy under build/cinterop/, because they have to be in the
+# published klib for a consumer to link at all (M-110).
 
 ---
 

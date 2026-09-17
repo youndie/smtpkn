@@ -62,6 +62,33 @@ jobs:
           name: test-reports-linux
           path: '**/build/reports/tests/**'
 
+  # THE CONSUMER'S VIEW (M-110). `examples/send` compiles in every build and still cannot see a klib
+  # published without its linker options: it shares the library's source sets and `binaries.all`.
+  # This job publishes the native TLS module to a file repository and links a separate build
+  # against it — one that knows only the coordinate and the URL and carries no linker option of its
+  # own. It was red against the artefact published before the fix.
+  consumer:
+    name: published klib links in a consumer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: youndie/sborka/.github/actions/setup-kotlin@main
+
+      - name: publish to a file repository
+        run: |
+          ./gradlew -Pversion=0.0.0-consumer-check --stacktrace \
+            :smtp-core:publishKotlinMultiplatformPublicationToConsumerCheckRepository \
+            :smtp-core:publishLinuxX64PublicationToConsumerCheckRepository \
+            :smtp-tls-openssl:publishAllPublicationsToConsumerCheckRepository
+
+      - name: link and run against it
+        run: |
+          ./gradlew -p tools/consumer-check --stacktrace \
+            -PsmtpknRepo="file://$PWD/build/consumer-check-repo" \
+            -PsmtpknVersion=0.0.0-consumer-check \
+            consumerCheck
+
   # The development host target: if it breaks, everyone's local TDD loop stops.
   macos:
     name: macosArm64
