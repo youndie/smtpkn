@@ -36,7 +36,8 @@ publishes:
 | `src/nativeInterop/cinterop/openssl.def` | заголовки + C-обёртки над макросами OpenSSL |
 | `src/nativeMain/.../OpenSslTlsProvider.kt` | рукопожатие, проверка, перекачка байтов |
 | `src/nativeTest/.../OpenSslTlsTest.kt` | пять тестов против настоящего сервера |
-| `build.gradle.kts` | поиск OpenSSL, includeDirs, linkerOpts |
+| `build.gradle.kts` | поиск OpenSSL, includeDirs, генерация `.def` с `linkerOpts` |
+| `../tools/consumer-check/` | сборка-потребитель: линкует и запускает бинарь против опубликованного klib |
 | `../tools/generate-test-certs.sh` | CA и сертификат для тестов |
 
 ## 3. Как устроено
@@ -82,9 +83,19 @@ SMTP_TLS_E2E_HOST=127.0.0.1 SMTP_TLS_E2E_CA="$PWD/build/e2e-certs/ca.pem" \
   публикуются с Linux-раннера (M-100).
 * **Debian кладёт `opensslconf.h` в `include/<triplet>/openssl`**, а не рядом с `ssl.h`. Указать
   cinterop только на префикс — получить «'openssl/opensslconf.h' file not found».
-* **Линковка требует `-Wl,--allow-shlib-undefined` на Linux**: sysroot Kotlin/Native намеренно со
-  старой glibc, а системная `libssl` ссылается на символы новее (`stat@GLIBC_2.33` и прочие).
-  Разрешает их динамический загрузчик при запуске.
+* **Опции линковки обязаны ехать в klib, а не только к своим бинарям.** `-L…`, `-lssl`, `-lcrypto`
+  и `--allow-shlib-undefined` стояли в `binaries.all`: свои тесты линковались, а потребитель получал
+  `undefined symbol: OpenSSL_version_num` (M-110). Поэтому `build.gradle.kts` генерирует
+  `build/cinterop/openssl.def` — исходный текст плюс `linkerOpts` и `libraryPaths` с уже
+  разрешёнными путями — и cinterop читает его, а не файл из `src/`. Каталог поиска нужен **внутри**
+  `linkerOpts`: `libraryPaths` действует на этапе cinterop и до линковки у потребителя не доходит.
+  Приёмка — `tools/consumer-check`: отдельная сборка без единой своей опции линковки, в CI она
+  линкует и запускает бинарь против артефакта, только что опубликованного в файловый репозиторий.
+* **`--allow-shlib-undefined` на Linux, без префикса `-Wl,`**: sysroot Kotlin/Native намеренно со
+  старой glibc, а системная `libssl` ссылается на символы новее (`stat@GLIBC_2.33` и прочие);
+  разрешает их динамический загрузчик при запуске. Из `.def` опции уходят прямо в `ld.lld`, а не
+  через драйвер компилятора, так что драйверная запись `-Wl,…` там не принимается (измерено
+  в mongkn, чья починка здесь повторена).
 * **Владение передаётся ровно один раз.** До создания `OpenSslConnection` всё освобождает
   фабрика, после — только сама связь. Ошибка здесь не утечка, а двойное освобождение: процесс
   падает вместо провала теста, и в отчёте это выглядит как «часть тестов не запускалась».

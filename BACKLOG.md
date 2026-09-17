@@ -283,7 +283,7 @@ Debian кладёт `opensslconf.h` в `include/<triplet>/openssl`; линков
 
 ## M11 — опубликованный артефакт пригоден к линковке
 
-- [ ] **M-110** `:smtp-tls-openssl` публикуется без опций линковки: в манифесте его cinterop-klib
+- [x] **M-110** `:smtp-tls-openssl` публикуется без опций линковки: в манифесте его cinterop-klib
   нет `linkerOpts`, а `included/` пуст. Опции (`-L…`, `-lssl`, `-lcrypto`,
   `--allow-shlib-undefined` на Linux) стоят в `binaries.all` в `smtp-tls-openssl/build.gradle.kts`,
   то есть **только у наших собственных бинарей**. Свои тесты линкуются, чужая сборка — нет.
@@ -316,3 +316,28 @@ Debian кладёт `opensslconf.h` в `include/<triplet>/openssl`; линков
     единой собственной опции линковки.
   - AC: она же показана красной против артефакта, опубликованного до починки, — иначе неизвестно,
     что проверка ловит то, ради чего заведена.
+
+**GATE закрыт.** Приёмка — `tools/consumer-check`, отдельная Gradle-сборка вне корневых settings:
+знает координату и URL, своих опций линковки не имеет, задача `consumerCheck` линкует и запускает
+бинарь. Красная против `0.1.0-20260902.063559-4` из Reposilite:
+
+```
+> Task :linkReleaseExecutableLinuxX64 FAILED
+ld.lld: error: undefined symbol: OpenSSL_version_num
+>>> referenced by out
+>>>               consumer-check.kexe.o:(kfun:#main(){})
+```
+
+Зелёная против артефакта, опубликованного из починенной ветки в файловый репозиторий
+`build/consumer-check-repo`, на обоих хостах: Linux печатает `OpenSSL 3.0.13`, macOS — `3.6.1`.
+Манифест cinterop-klib после починки:
+`linkerOpts=--allow-shlib-undefined -L/usr/lib/x86_64-linux-gnu -lssl -lcrypto`. Собственные
+тесты модуля без `binaries.all` зелёные на linuxX64 и macosArm64, `examples/send` линкуется.
+
+**Итог M11.** Починка — mongkn'овская, один в один: `.def` генерируется в `build/cinterop/`,
+`binaries.all` убран целиком, чтобы не было второго механизма, за которым прячется первый. Одна
+грабля сверх mongkn: у `openssl.def` есть секция C после `---`, и сгенерированные строки должны
+стоять **до** неё — иначе `#` читается препроцессором как директива. Проверка встроена в CI
+отдельным заданием: публикация в файловый репозиторий, затем `consumerCheck`. Снапшот в Reposilite
+по-прежнему старый — его перепубликует следующий **Publish snapshot**, до этого потребитель снапшота
+получает нелинкуемый артефакт.

@@ -19,6 +19,13 @@ publishing {
                 password = providers.environmentVariable("REPOSILITE_SECRET").orNull
             }
         }
+
+        // A file repository for the consumer check (M-110): CI publishes here and then links
+        // `tools/consumer-check` against it, the way a stranger's build would.
+        maven {
+            name = "ConsumerCheck"
+            url = uri(rootProject.layout.buildDirectory.dir("consumer-check-repo"))
+        }
     }
 }
 
