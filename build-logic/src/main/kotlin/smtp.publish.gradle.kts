@@ -29,6 +29,17 @@ publishing {
     }
 }
 
+// THE POM'S REPOSITORY, DESCRIPTION AND YEAR ARE READ FROM `gradle.properties`, under the names
+// sborka's own publish convention reads. This repository does not apply that convention (releases go
+// through vanniktech here, see RELEASING.md), so those three lines used to be read by nothing while
+// this script spelled the same values again. When the repository was renamed to youndie/smtpkn, both
+// copies kept the old name, and every published POM pointed at a GitHub redirect. One copy now.
+fun required(key: String): String =
+    providers.gradleProperty(key).orNull?.takeIf { it.isNotBlank() }
+        ?: error("$key is not set in gradle.properties; the POM of '${project.path}' is built from it")
+
+val repository = required("sborka.repository")
+
 mavenPublishing {
     // Publishing goes to the Central Portal; the release itself stays manual on purpose —
     // an automatic release cannot be taken back.
@@ -42,17 +53,14 @@ mavenPublishing {
 
     pom {
         name.set(project.name)
-        description.set(
-            "SMTP client for Kotlin Multiplatform: RFC 5321 over sockets, with STARTTLS, " +
-                "SASL and the ESMTP extensions, built to run on Kotlin/Native.",
-        )
-        inceptionYear.set("2026")
-        url.set("https://github.com/youndie/kmp-smtp-client")
+        description.set(required("sborka.description"))
+        inceptionYear.set(required("sborka.inceptionYear"))
+        url.set("https://github.com/$repository")
 
         licenses {
             license {
                 name.set("MIT License")
-                url.set("https://github.com/youndie/kmp-smtp-client/blob/main/LICENSE")
+                url.set("https://github.com/$repository/blob/main/LICENSE")
                 distribution.set("repo")
             }
         }
@@ -66,9 +74,9 @@ mavenPublishing {
         }
 
         scm {
-            url.set("https://github.com/youndie/kmp-smtp-client")
-            connection.set("scm:git:git://github.com/youndie/kmp-smtp-client.git")
-            developerConnection.set("scm:git:ssh://git@github.com/youndie/kmp-smtp-client.git")
+            url.set("https://github.com/$repository")
+            connection.set("scm:git:git://github.com/$repository.git")
+            developerConnection.set("scm:git:ssh://git@github.com/$repository.git")
         }
     }
 }

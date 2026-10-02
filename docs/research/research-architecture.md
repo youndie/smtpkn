@@ -1,11 +1,11 @@
 ---
 id: research-architecture
-title: kmp-smtp-client — архитектурный research
+title: smtpkn — архитектурный research
 status: active
 date: 2026-08-08
 ---
 
-# research — архитектура kmp-smtp-client
+# research — архитектура smtpkn
 
 Библиотека-клиент SMTP для Kotlin Multiplatform, у которой первая и главная цель — **работать на
 Kotlin/Native под серверной нагрузкой**, а не быть ещё одной обёрткой над Jakarta Mail. На JVM

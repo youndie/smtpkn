@@ -55,7 +55,9 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "kmp-smtp-client"
+// The repository's name, which the published js and wasmJs klibs also carry: it is the prefix of
+// their `jsOutputName`.
+rootProject.name = "smtpkn"
 
 include(":examples:send")
 include(":smtp-core")
