@@ -25,7 +25,7 @@ jobs:
       SMTP_E2E_API_PORT: "8025"
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.133
 
@@ -57,7 +57,7 @@ jobs:
 
       - name: test reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-reports-linux
           path: '**/build/reports/tests/**'
@@ -71,7 +71,7 @@ jobs:
     name: published klib links in a consumer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.133
 
@@ -94,7 +94,7 @@ jobs:
     name: macosArm64
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.133
 
