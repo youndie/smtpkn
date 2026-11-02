@@ -41,7 +41,7 @@ services:
   # всё; строгость проверяется здесь. Письма никуда не уходят: исходящей доставки нет, всё оседает
   # в очереди — для теста важен ответ сервера, а не судьба письма.
   postfix:
-    image: boky/postfix:v5.1.0-debian
+    image: boky/postfix:5.2.1-debian
     container_name: kmp-smtp-postfix
     ports:
       - "1587:587"
