@@ -16,7 +16,7 @@ name: kmp-smtp-client
 services:
   # Открытый канал плюс STARTTLS на том же порту — сценарий сабмишна на 587.
   mailpit:
-    image: axllent/mailpit:v1.30.7
+    image: axllent/mailpit:v1.33.1
     container_name: kmp-smtp-mailpit
     ports:
       - "1025:1025" # SMTP
@@ -41,7 +41,7 @@ services:
   # всё; строгость проверяется здесь. Письма никуда не уходят: исходящей доставки нет, всё оседает
   # в очереди — для теста важен ответ сервера, а не судьба письма.
   postfix:
-    image: boky/postfix:v5.1.0-debian
+    image: boky/postfix:5.2.1-debian
     container_name: kmp-smtp-postfix
     ports:
       - "1587:587"
@@ -68,7 +68,7 @@ services:
 
   # Implicit TLS — сценарий сабмишна на 465 (`docs/rfc/rfc8314.txt`).
   mailpit-tls:
-    image: axllent/mailpit:v1.30.7
+    image: axllent/mailpit:v1.33.1
     container_name: kmp-smtp-mailpit-tls
     ports:
       - "1465:1025"
