@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.133
+      - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.135
 
       - name: publish
         env:
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.133
+      - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.135
 
       - name: publish
         env:
